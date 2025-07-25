@@ -3,4 +3,4 @@
 .venv/
 
 # Ignore environment variables file
-backend/app/.env 
+app/.env
