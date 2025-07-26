@@ -1,6 +1,3 @@
-PROJECT OVERVIEW
-
-
 Design and develop an end-to-end recruitment platform that:
 	•	Allows companies to post job openings.
 	•	Enables candidates to register, apply, and upload resumes.
@@ -13,7 +10,7 @@ Authentication & Authorization (JWT)
 	•	Role-based (Admin, HR Manager, Candidate)
 	•	Email verification & password reset
 ⸻
-Candidate Portal  
+Candidate Portal
 	•	Profile management
 	•	Resume upload (PDF)
 	•	Skill & experience tagging
@@ -46,7 +43,7 @@ C. Automated Scoring
 D. Interview Question Generation
 	•	Use OpenAI API or fine-tuned model to generate:
 	•	3 role-specific screening questions per applicant.
-E. AI Chatbot 
+E. AI Chatbot
 	•	Use LangChain or RAG model trained on resume/job data.
 	•	Candidate can ask: “Why is this job a good fit for me?”
 ⸻

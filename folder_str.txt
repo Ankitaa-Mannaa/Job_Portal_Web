@@ -1,0 +1,59 @@
+|Recruitment portal
+|
+├───backend
+│   │   .gitignore
+│   │
+│   └───app
+│       │   .env
+│       │   access_control.py
+│       │   config.py
+│       │   db.py
+│       │   wsgi.py
+│       │   __init__.py
+│       │
+│       ├───admin
+│       │       admin_routes.py
+│       │       stats.py
+│       │
+│       ├───application
+│       │       application_models.py
+│       │       application_routes.py
+│       │
+│       ├───auth
+│       │       auth_routes.py
+│       │       email_utils.py
+│       │
+│       ├───chatbot
+│       │       ai_chatbot.py
+│       │       chatbot_models.py
+│       │       chatbot_routes.py
+│       │
+│       ├───feedback
+│       │       feedback_models.py
+│       │       feedback_routes.py
+│       │
+│       ├───interview
+│       │       interview_generator.py
+│       │       interview_models.py
+│       │       interview_routes.py
+│       │
+│       ├───jobs
+│       │       job_models.py
+│       │       job_routes.py
+│       │
+│       ├───resume
+│       │       embedder.py
+│       │       parser.py
+│       │       resume_matching.py
+│       │       resume_models.py
+│       │       resume_routes.py
+│       │       resume_score.py
+│       │       vectorstore.py
+│       │
+│       ├───role
+│       │       role_models.py
+│       │
+│       └───user
+│               user_models.py
+│
+└───frontend
