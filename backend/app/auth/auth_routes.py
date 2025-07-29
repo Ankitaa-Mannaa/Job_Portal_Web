@@ -1,6 +1,6 @@
 import re
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import create_access_token, decode_token
+from flask_jwt_extended import create_access_token, decode_token, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.db import get_db_connection
 from app.role.role_models import get_role_by_name, create_role
@@ -72,23 +72,36 @@ def login():
 
     if not email or not password:
         return jsonify({"msg": "Email and password required"}), 400
+
     if not re.match(EMAIL_REGEX, email):
         return jsonify({"msg": "Invalid email format"}), 400
 
-    user = get_user_by_email(email)
-    if user and check_password_hash(user['password_hash'], password):
-        conn = get_db_connection()
-        try:
-            with conn.cursor() as cursor:
-                cursor.execute("SELECT name FROM roles WHERE id=%s", (user['role_id'],))
-                role = cursor.fetchone()['name']
-        finally:
-            conn.close()
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cursor:
+            # 1. Fetch user
+            cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+            user = cursor.fetchone()
 
-        token = create_access_token(identity={"id": user['id'], "role": role})
-        return jsonify(access_token=token)
+            if not user or not check_password_hash(user['password_hash'], password):
+                return jsonify({"msg": "Invalid credentials"}), 401
 
-    return jsonify({"msg": "Invalid credentials"}), 401
+            # 2. Get role name from role_id
+            cursor.execute("SELECT name FROM roles WHERE id = %s", (user['role_id'],)) 
+            role_row = cursor.fetchone()
+            role = role_row['name'] if role_row else 'candidate'
+
+            # 3. Embed both id and role into JWT
+            token = create_access_token(
+                identity=str(user['id']),
+                additional_claims={"role": role}
+            )
+            return jsonify(access_token=token), 200
+
+    except Exception as e:
+        return jsonify({"msg": "Login error", "error": str(e)}), 500
+    finally:
+        conn.close()
 
 
 @auth_bp.route('/forgot-password', methods=['POST'])
@@ -124,7 +137,7 @@ def reset_password():
 
     try:
         identity = decode_token(token)['sub']
-        user_id = identity['id']
+        user_id = int(get_jwt_identity())
         hashed = generate_password_hash(new_password)
     except Exception as e:
         return jsonify({"msg": "Invalid or expired token", "error": str(e)}), 400

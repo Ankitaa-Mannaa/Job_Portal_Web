@@ -57,3 +57,34 @@ def delete_job_by_id(job_id):
         raise e
     finally:
         conn.close()
+
+def get_all_jobs_from_db():
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                SELECT j.id, j.title, j.description, j.posted_by, j.created_at, u.email AS posted_by_email
+                FROM jobs j
+                JOIN users u ON j.posted_by = u.id
+                ORDER BY j.id DESC
+            """)
+            return cursor.fetchall()
+    except Exception as e:
+        raise e
+    finally:
+        conn.close()
+
+def get_jobs_by_company(company_id):
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                SELECT j.id, j.title, j.description, j.posted_by, j.created_at
+                FROM jobs j
+                WHERE j.posted_by = %s
+                ORDER BY j.id DESC
+            """, (company_id,))
+            return cursor.fetchall()
+    finally:
+        conn.close()
+

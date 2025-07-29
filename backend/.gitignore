@@ -4,3 +4,5 @@
 
 # Ignore environment variables file
 app/.env
+
+__pycache__/

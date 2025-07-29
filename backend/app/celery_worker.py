@@ -11,7 +11,6 @@ celery = Celery(
 )
 
 celery.conf.imports = [
-    'app.resume.tasks.resume_tasks',             # Add more task modules below as needed
-    'app.interview.tasks.interview_tasks',
-    'app.jobs.tasks.job_tasks'
+    'app.resume.resume_tasks',             # Add more task modules below as needed
+    'app.interview.interview_tasks'
 ]

@@ -1,0 +1,20 @@
+COMMANDS TO RUN THE APP 
+
+run the following in 4 seperate termials 
+
+1. redis start commands - 
+                        a. cd C:\Users\dell\Downloads\Redis
+                        b. redis-server.exe
+
+2. celery start commands - 
+                         a. cd backend
+                         b. celery -A app.celery_worker.celery worker --loglevel=info
+
+3. flask start commands - 
+                        a. cd backend
+                        b. flask run 
+
+4. react start commands - 
+                        1. cd frontend
+                        2. npm start
+

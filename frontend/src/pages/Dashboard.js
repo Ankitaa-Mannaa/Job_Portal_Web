@@ -20,13 +20,20 @@ export default function Dashboard() {
       console.log('✅ Decoded JWT:', decoded);
 
       const sub = decoded.sub;
-      if (!sub || !sub.role) {
-        console.warn('⚠️ Role missing from token payload');
+      const role = decoded.role;
+
+      if (!sub || !role) {
+        console.warn('⚠️ Token missing user ID or role');
         setUser(null);
         return;
       }
 
-      setUser(sub);
+      const user = {
+        id: parseInt(sub),
+        role: role
+      };
+      setUser(user);
+
     } catch (err) {
       console.error('❌ Failed to decode token:', err);
       localStorage.removeItem('token');
@@ -40,7 +47,7 @@ export default function Dashboard() {
   };
 
   if (!user) {
-    return <h2 style={styles.loading}>User role missing from token</h2>;
+    return <h2 style={styles.loading}>Loading...</h2>;
   }
 
   return (
@@ -63,8 +70,11 @@ function AdminDashboard() {
       <h3>Admin Dashboard</h3>
       <ul>
         <li><a href="/admin/users">View all users</a></li>
-        <li>Resume score analytics</li>
-        <li>Drop-off insights</li>
+        <li><a href="/admin/resume-scores">Resume score analytics</a></li>
+        <li><a href="/admin/dropoff-analytics">Drop-off insights</a></li>
+        <li><a href="/admin/user-stats">User stats</a></li>
+        <li><a href="/admin/job-stats">Job stats</a></li>
+        <li><a href="/admin/export-report">Export reports</a></li>
       </ul>
     </div>
   );
@@ -74,10 +84,11 @@ function CompanyDashboard() {
   return (
     <div style={styles.box}>
       <h3>Company Dashboard</h3>
-      <ul>
-        <li>Post a Job</li>
-        <li>Track Applicants</li>
-        <li>Submit Feedback</li>
+      <ul style={styles.ul}>
+        <li><a href="/company/post-job">Post a Job</a></li>
+        <li><a href="/company/applicants">Track Applicants</a></li>
+        <li><a href="/company/feedback">Submit Feedback</a></li>
+        <li><a href="/company/view-jobs">View Posted Jobs</a></li>
       </ul>
     </div>
   );
@@ -87,10 +98,12 @@ function CandidateDashboard() {
   return (
     <div style={styles.box}>
       <h3>Candidate Dashboard</h3>
-      <ul>
-        <li>Upload Resume</li>
-        <li>View Matched Jobs</li>
-        <li>AI Chat about Resume</li>
+      <ul style={styles.ul}>
+        <li><a href="/candidate/upload-resume">Upload Resume</a></li>
+        <li><a href="/candidate/jobs">View All Jobs</a></li>
+        <li><a href="/candidate/matched">View Matched Jobs</a></li>
+        <li><a href="/candidate/chat">AI Chat about Resume</a></li>
+        <li><a href="/candidate/applications">My Applications</a></li>
       </ul>
     </div>
   );

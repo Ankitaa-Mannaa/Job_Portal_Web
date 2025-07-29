@@ -17,7 +17,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 @jwt_required()
 @role_required('candidate')
 def upload_resume():
-    user_id = get_jwt_identity()['id']
+    user_id = int(get_jwt_identity())
     if 'file' not in request.files:
         return jsonify({'msg': 'No file provided'}), 400
 
@@ -68,7 +68,7 @@ def score_resume():
 
         if not data or 'job_id' not in data:
             return jsonify({"msg": "job_id is required in request body"}), 400
-
+       
         job_id = data.get("job_id")
         if not isinstance(job_id, int) or job_id <= 0:
             return jsonify({"msg": "job_id must be a positive integer"}), 400

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
+import { useAuth } from '../context/AuthContext';
+
 
 export default function Login() {
   const navigate = useNavigate();
@@ -11,27 +12,23 @@ export default function Login() {
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
+  const { login } = useAuth();  // pull login from context
 
-    try {
-      const res = await axios.post(
-        `${process.env.REACT_APP_API_URL}/auth/login`,
-        form
-      );
-      const token = res.data.access_token;
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError('');
 
-      if (!token) {
-        throw new Error("No token received from backend");
-      }
+  try {
+    const res = await axios.post(
+      `${process.env.REACT_APP_API_URL}/auth/login`,
+      form
+    );
+    const token = res.data.access_token;
 
-      localStorage.setItem('token', token);
+    if (!token) throw new Error("No token received from backend");
 
-      const payload = jwtDecode(token);
-      console.log('✅ Decoded login payload:', payload);
-
-      navigate('/');
+    login(token);          // call context login handler
+    navigate('/');
     } catch (err) {
       console.error('❌ Login failed:', err);
       setError(
@@ -39,6 +36,7 @@ export default function Login() {
       );
     }
   };
+
 
   return (
     <div style={styles.container}>
