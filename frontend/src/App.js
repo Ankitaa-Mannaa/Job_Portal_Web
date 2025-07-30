@@ -9,7 +9,7 @@ import AdminJobStats from './pages/Admin/AdminJobStats';
 import AdminExportReport from './pages/Admin/AdminExportReport';
 import AdminResumeScores from './pages/Admin/AdminResumeScores';
 import AdminDropoffAnalytics from './pages/Admin/AdminDropoffAnalytics';
-import PostJob from './pages/company/Postjobs';
+import PostJob from './pages/company/JobPost';
 import TrackApplicants from './pages/company/TrackApplicants';
 import SubmitFeedback from './pages/company/SubmitFeedback';
 import ViewJobs from './pages/company/ViewJobs';
@@ -18,6 +18,8 @@ import AllJobs from './pages/candidate/AllJobs';
 import MatchedJobs from './pages/candidate/MatchedJobs';
 import ResumeChat from './pages/candidate/ResumeChat';
 import MyApplications from './pages/candidate/MyApplications';
+import Profile from './pages/shared/Profile';
+
 
 function App() {
   return (
@@ -42,6 +44,7 @@ function App() {
       <Route path="/candidate/matched" element={<PrivateRoute role="candidate"><MatchedJobs /></PrivateRoute>} />
       <Route path="/candidate/chat" element={<PrivateRoute role="candidate"><ResumeChat /></PrivateRoute>} />
       <Route path="/candidate/applications" element={<PrivateRoute role="candidate"><MyApplications /></PrivateRoute>} />
+      <Route path="/me" element={<PrivateRoute><Profile /></PrivateRoute>} />
     </Routes>
   );
 }

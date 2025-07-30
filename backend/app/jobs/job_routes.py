@@ -1,7 +1,13 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from app.access_control import role_required
-from app.jobs.job_models import create_job, get_job_by_id, update_job_by_id, delete_job_by_id, get_all_jobs_from_db, get_jobs_by_company
+from app.jobs.job_models import (create_job, 
+                                 get_job_by_id, 
+                                 update_job_by_id, 
+                                 delete_job_by_id, 
+                                 get_all_jobs_from_db, 
+                                 get_jobs_by_company)
+from app.jobs.job_vectorstore import add_job_embedding
 
 job_bp = Blueprint('job', __name__)
 
@@ -12,13 +18,15 @@ def post_job():
     data = request.get_json()
     title = data.get('title')
     description = data.get('description')
-    posted_by = int(get_jwt_identity())
+    posted_by = get_jwt_identity()
 
     if not title or not description:
         return jsonify({"msg": "Title and description required"}), 400
 
     try:
         job_id = create_job(title, description, posted_by)
+        add_job_embedding(job_id, description)  # Embed after DB insert
+
         return jsonify({'msg': 'Job posted successfully', 'job_id': job_id}), 201
     except Exception as e:
         return jsonify({'msg': 'Failed to create job', 'error': str(e)}), 500

@@ -3,7 +3,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.access_control import role_required
 from app.application.application_models import create_application, get_applications_by_user, update_application_status_by_id, delete_application_by_id
 from app.jobs.job_models import get_job_by_id
-
+from app.db import get_db_connection
+import pymysql.cursors
 
 application_bp = Blueprint('application', __name__)
  
@@ -58,4 +59,33 @@ def update_application_status(app_id):
 @role_required('company', 'candidate')
 def delete_application(app_id):
     delete_application_by_id(app_id)
-    return jsonify({'msg': 'Application deleted'})
+    return jsonify({'msg': 'Application deleted'}) 
+
+
+@application_bp.route('/all', methods=['GET'])
+@jwt_required()
+@role_required('company')
+def get_all_applicants_for_company():
+    company_id = int(get_jwt_identity())
+    conn = get_db_connection()
+    try:
+        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            query = """
+                SELECT 
+                    a.id, 
+                    a.user_id, 
+                    a.job_id, 
+                    j.title AS job_title, 
+                    a.status, 
+                    a.applied_at
+                FROM applications a
+                JOIN jobs j ON a.job_id = j.id
+                ORDER BY a.applied_at DESC;
+            """
+            cursor.execute(query, (company_id,))
+            return jsonify(cursor.fetchall())
+    except Exception as e:
+        import traceback; traceback.print_exc()
+        return jsonify({"msg": "Error retrieving applicants", "error": str(e)}), 500
+    finally:
+        conn.close()

@@ -25,3 +25,16 @@ def get_user_by_email(email):
         raise e
     finally:
         conn.close()
+
+
+def update_user_by_id(user_id, name, email):
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                "UPDATE users SET username = %s, email = %s WHERE id = %s",
+                (name, email, user_id)
+            )
+            conn.commit()
+    finally:
+        conn.close()

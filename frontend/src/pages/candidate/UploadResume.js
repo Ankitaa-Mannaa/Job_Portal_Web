@@ -10,7 +10,8 @@ export default function UploadResume() {
   const handleUpload = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append('resume', file);
+    formData.append('file', file);
+
 
     try {
       const res = await axios.post('http://localhost:5000/api/resume/upload', formData, {
@@ -21,6 +22,7 @@ export default function UploadResume() {
       });
       setMsg(res.data.msg || 'Uploaded');
     } catch (err) {
+      console.error('❌ Upload error:', err);
       setMsg('Upload failed.');
     }
   };

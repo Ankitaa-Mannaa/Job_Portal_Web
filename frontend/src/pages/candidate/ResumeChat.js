@@ -9,10 +9,11 @@ export default function ResumeChat() {
 
   const sendMessage = async () => {
     try {
-      const res = await axios.post('http://localhost:5000/api/chat/resume', { message: input }, {
+      console.log("🔐 Sending token:", user?.token);
+      const res = await axios.post('http://localhost:5000/api/chat/', { question: input }, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
-      setReply(res.data.reply);
+      setReply(res.data.answer);
     } catch (err) {
       setReply('Failed to fetch response');
     }

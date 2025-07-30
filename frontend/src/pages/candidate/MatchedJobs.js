@@ -16,10 +16,11 @@ export default function MatchedJobs() {
     <div style={{ maxWidth: 800, margin: '40px auto' }}>
       <h2>Recommended Jobs</h2>
       <ul>
-        {jobs.map((job, i) => (
-          <li key={i}>
-            <strong>{job.title}</strong><br />
-            {job.description}
+        {jobs.map((item, index) => (
+          <li key={index}>
+            <h3>{item.job.title}</h3>
+            <p>{item.job.description}</p>
+            <p><strong>Match Score:</strong> {item.score.toFixed(2)}%</p>
           </li>
         ))}
       </ul>

@@ -5,6 +5,7 @@ from flask_restx import Api
 from dotenv import load_dotenv
 import os
 
+
 load_dotenv()
 
 from app.auth.auth_routes import auth_bp
@@ -38,7 +39,7 @@ def create_app():
     app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
     app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY")
     
-    CORS(app)
+    CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
 
     jwt = JWTManager(app)
     api = Api(app, doc='/docs')

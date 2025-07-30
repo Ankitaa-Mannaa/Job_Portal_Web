@@ -1,11 +1,13 @@
 import re
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import create_access_token, decode_token, get_jwt_identity
+from flask_jwt_extended import create_access_token, decode_token, get_jwt_identity, jwt_required, get_jwt
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.db import get_db_connection
 from app.role.role_models import get_role_by_name, create_role
-from app.user.user_models import create_user, get_user_by_email
+from app.user.user_models import create_user, get_user_by_email, update_user_by_id
 from app.auth.email_utils import send_reset_email
+import pymysql.cursors
+import traceback
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -156,3 +158,64 @@ def reset_password():
         return jsonify({"msg": "Password reset failed", "error": str(e)}), 500
     finally:
         conn.close()
+
+
+@auth_bp.route('/me', methods=['GET'])
+@jwt_required()
+def get_current_user():
+    try:
+        user_id = int(get_jwt_identity())
+        claims = get_jwt()
+        role = claims.get('role')
+
+        conn = get_db_connection()
+        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute("SELECT id, email, username FROM users WHERE id = %s", (user_id,))
+            user = cursor.fetchone()
+
+        if not user:
+            return jsonify({"msg": "User not found"}), 404
+
+        return jsonify({
+            "id": user["id"],
+            "role": role,
+            "name": user["username"],
+            "email": user["email"]
+        })
+
+    except Exception as e:
+        print(" /me error:", e)
+        return jsonify({"msg": "Internal server error", "error": str(e)}), 500
+
+
+
+@auth_bp.route('/me', methods=['PUT'])
+@jwt_required()
+def update_me():
+
+    try:
+        user_id = int(get_jwt_identity())
+        data = request.get_json()
+
+        name = data.get('name', '').strip()
+        email = data.get('email', '').strip()
+
+        if not name or not email:
+            return jsonify({"msg": "Name and email are required"}), 400
+
+        update_user_by_id(user_id, name, email)
+        return jsonify({
+            "msg": "User profile updated successfully",
+            "user": {
+                "id": user_id,
+                "name": name,
+                "email": email
+            }
+        }), 200
+
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({
+            "msg": "Update failed",
+            "error": str(e)
+        }), 500

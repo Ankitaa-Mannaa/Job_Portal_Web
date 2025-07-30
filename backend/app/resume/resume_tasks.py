@@ -33,3 +33,5 @@ def score_resume_task(self, user_id, job_id):
         return {"status": "scored", "score": score}
     except Exception as e:
         self.retry(exc=e, countdown=10, max_retries=3)
+
+        

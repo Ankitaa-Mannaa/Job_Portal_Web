@@ -30,25 +30,42 @@ def upload_resume():
     file.save(filepath)
 
     try:
-        task = process_resume_task.delay(user_id, filepath)
-        return jsonify({
-            'msg': 'Resume uploaded. Processing in background.',
-            'task_id': task.id
-        }), 202
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
+        # FOR DEVELOPMENT: run synchronously to avoid Celery
+        result = process_resume_task(user_id, filepath)
+
+        return jsonify({
+            'msg': 'Resume uploaded and processed (synchronously)',
+            'result': result  # whatever your task returns
+        }), 200
+
+# --------------------------------------------------------------------------------------------
+
+        # Uncomment below for production with Celery
+        #task = process_resume_task(user_id, filepath)   # remember to add .delay()
+        #return jsonify({
+         #   'msg': 'Resume uploaded. Processing in background.',
+          #  'task_id': task.id
+        #}), 202
+
+# --------------------------------------------------------------------------------------------
+
+    except Exception as e:
+        print("❌ Upload failed:", e)
+        import traceback; traceback.print_exc()  # <-- shows full error
+        return jsonify({'msg': 'Upload failed', 'error': str(e)}), 500
 
 @resume_bp.route('/recommendations', methods=['GET'])
 @jwt_required()
 @role_required('candidate')
 def get_job_recommendations():
     try:
-        user_id = get_jwt_identity().get('id')
+        user_id = int(get_jwt_identity())
         if not isinstance(user_id, int) or user_id <= 0:
             return jsonify({'msg': 'Invalid user ID in token'}), 400
 
         results = recommend_jobs_for_candidate(user_id)
+        print(f"🔍 Recommendations for user {user_id}: {results}")
         return jsonify(results), 200
 
     except ValueError as ve:
@@ -56,6 +73,8 @@ def get_job_recommendations():
     except RuntimeError as re:
         return jsonify({'msg': str(re)}), 500
     except Exception as e:
+        import traceback; traceback.print_exc()
+        print("❌ /recommendations error:", e)
         return jsonify({'msg': 'Unexpected error occurred', 'error': str(e)}), 500
 
 

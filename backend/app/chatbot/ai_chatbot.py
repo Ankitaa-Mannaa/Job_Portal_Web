@@ -16,7 +16,7 @@ def generate_chat(prompt, context):
                 "Content-Type": "application/json"
             },
             json={
-                "model": "mistral/mistral-large-latest",
+                "model": "mistralai/mistral-7b-instruct",
                 "messages": [{"role": "user", "content": full_prompt}]
             },
             timeout=20

@@ -13,7 +13,7 @@ chatbot_bp = Blueprint('chatbot', __name__)
 @jwt_required()
 @role_required('candidate')
 def chat_about_resume():
-    user_id = get_jwt_identity()['id']
+    user_id = int(get_jwt_identity())
     data = request.get_json()
     question = data.get("question")
 
