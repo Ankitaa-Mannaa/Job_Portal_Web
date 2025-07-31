@@ -1,0 +1,19 @@
+User Stats
+Total Users,Admins,Companies,Candidates
+4,1,1,2
+
+Job Stats
+Total Jobs,Avg. Applications/Job,Most Applied Job,Total Apps for That Job
+3,1.50,Business Analyst,2
+
+Average Resume Score Per Job
+Job Title,Job ID,Avg Score,Candidates Scored
+Business Analyst,2,14.1,1
+
+Drop-off Analytics
+Resume Uploaded,Total Applications,Applied Without Resume
+2,3,0
+
+Raw Resume Scores
+User ID,Username,Job ID,Job Title,Score
+5,rakhi,2,Business Analyst,14.1
