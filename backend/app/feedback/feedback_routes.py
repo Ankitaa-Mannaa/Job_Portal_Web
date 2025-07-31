@@ -16,17 +16,21 @@ feedback_bp = Blueprint('feedback', __name__)
 @jwt_required()
 @role_required('company', 'admin')
 def give_feedback():
+    print("🔐 Logged-in HR ID:", get_jwt_identity())
     data = request.get_json()
-    candidate_id = data.get('user_id')
-    job_id = data.get('job_id')
+    candidate_id = int(data.get('user_id'))
+    job_id = int(data.get('job_id'))
     feedback = data.get('feedback')
-    hr_id = get_jwt_identity()['id']
+    hr_id = int(get_jwt_identity())
 
     if not all([candidate_id, job_id, feedback]):
         return jsonify({'msg': 'All fields are required'}), 400
 
     # Validate job ownership
     job = get_job_by_id(job_id)
+    #print(" Job record:", job)
+    #print(" Job posted_by:", job.get('posted_by'), type(job.get('posted_by')))
+    #print(" HR ID:", hr_id, type(hr_id))
     if not job:
         return jsonify({'msg': 'Job not found'}), 404
     if job['posted_by'] != hr_id:
@@ -34,6 +38,9 @@ def give_feedback():
 
     # Validate candidate actually applied
     apps = get_applications_by_user(candidate_id)
+    #print(" Checking if candidate", candidate_id, "has applied to job", job_id)
+    #print(" Candidate's Applications:", apps)
+    #print(" Candidate applied job_ids:", [a['job_id'] for a in apps])
     if job_id not in [a['job_id'] for a in apps]:
         return jsonify({'msg': 'Candidate has not applied to this job'}), 403
 
@@ -41,6 +48,7 @@ def give_feedback():
         add_feedback(candidate_id, job_id, feedback, hr_id)
         return jsonify({'msg': 'Feedback submitted'}), 201
     except Exception as e:
+        import traceback; traceback.print_exc()
         return jsonify({'msg': 'Failed to submit feedback', 'error': str(e)}), 500
 
 # HR/Admin can view feedback given to a specific candidate (any job)
@@ -59,11 +67,14 @@ def get_feedback_for_candidate(user_id):
 @jwt_required()
 @role_required('candidate')
 def get_my_feedback():
-    user_id = get_jwt_identity()['id']
+    user_id = int(get_jwt_identity())
+    print("✅ Extracted user_id:", user_id)
     try:
         data = get_feedback_by_user(user_id)
+        print("✅ Fetched feedback count:", len(data))
         return jsonify(data)
     except Exception as e:
+        import traceback; traceback.print_exc()
         return jsonify({'msg': 'Failed to fetch your feedback', 'error': str(e)}), 500
 
 # Candidate views feedback from a specific company about them
@@ -71,9 +82,12 @@ def get_my_feedback():
 @jwt_required()
 @role_required('candidate')
 def get_feedback_for_job(job_id):
-    user_id = get_jwt_identity()['id']
+    user_id = int(get_jwt_identity())
+    print("✅ Extracted user_id:", user_id)
     try:
         data = get_feedback_for_user_by_job(user_id, job_id)
+        print("✅ Fetched feedback count:", len(data))
         return jsonify(data)
     except Exception as e:
+        import traceback; traceback.print_exc()
         return jsonify({'msg': 'Failed to fetch feedback for job', 'error': str(e)}), 500

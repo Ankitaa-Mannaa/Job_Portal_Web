@@ -21,6 +21,8 @@ export default function Dashboard() {
       {user.role === 'candidate' && <CandidateDashboard />}
 
       <button onClick={logout} style={styles.logout}>Logout</button>
+      <button onClick={() => navigate('/forgot-password')} style={styles.button}>Forgot Password</button>
+      <button onClick={() => navigate('/reset-password')} style={styles.button}>Reset Password</button>
     </div>
   );
 }
@@ -52,6 +54,8 @@ function CompanyDashboard() {
         <li><a href="/company/applicants">Track Applicants</a></li>
         <li><a href="/company/feedback">Submit Feedback</a></li>
         <li><a href="/company/view-jobs">View Posted Jobs</a></li>
+        <li><a href="/company/score-by-user">Get Score Resume by User ID</a></li>
+        <li><a href="/company/assign-interview">Assign Interview</a></li>
       </ul>
     </div>
   );
@@ -68,6 +72,8 @@ function CandidateDashboard() {
         <li><a href="/candidate/matched">View Matched Jobs</a></li>
         <li><a href="/candidate/chat">AI Chat about Resume</a></li>
         <li><a href="/candidate/applications">My Applications</a></li>
+        <li><a href="/candidate/interview">My Interview Questions</a></li>
+        <li><a href="/candidate/feedback">View Feedback from Companies</a></li>
       </ul>
     </div>
   );
@@ -104,4 +110,15 @@ const styles = {
     marginTop: '100px',
     fontSize: '20px',
   },
+  button: {
+  marginTop: 10,
+  padding: '10px 20px',
+  backgroundColor: '#0275d8',
+  color: 'white',
+  border: 'none',
+  borderRadius: 5,
+  fontWeight: 'bold',
+  cursor: 'pointer',
+  width: '100%',
+ }
 };

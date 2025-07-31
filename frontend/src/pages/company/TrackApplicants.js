@@ -31,11 +31,11 @@ export default function TrackApplicants() {
       }, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
-      setMessage(` Status updated for application ${appId}`);
-      fetchApplications(); // safe to call
+      setMessage(`✅ Status updated for application ${appId}`);
+      fetchApplications(); // refresh
     } catch (err) {
       console.error(err);
-      setMessage(` Update failed for application ${appId}`);
+      setMessage(`❌ Update failed for application ${appId}`);
     }
   };
 
@@ -58,16 +58,15 @@ export default function TrackApplicants() {
         <tbody>
           {apps.length === 0 ? (
             <tr>
-              <td colSpan="5" style={styles.noData}>No applications found</td>
+              <td colSpan="7" style={styles.noData}>No applications found</td>
             </tr>
           ) : (
             apps.map(app => (
               <tr key={app.id}>
-                <td>{app.candidate_name}</td>
-                <td>{app.candidate_email}</td>
                 <td>{app.id}</td>
+                <td>{app.candidate_name || 'N/A'}</td>
+                <td>{app.candidate_email || 'N/A'}</td>
                 <td>{app.candidate_id || app.user_id}</td>
-                <td>{app.job_id}</td>
                 <td>{app.job_title || app.job_id}</td>
                 <td>{app.status}</td>
                 <td>
@@ -94,7 +93,7 @@ export default function TrackApplicants() {
 
 const styles = {
   container: {
-    maxWidth: 1000,
+    maxWidth: 1100,
     margin: '50px auto',
     padding: 20,
     fontFamily: 'Segoe UI, sans-serif',

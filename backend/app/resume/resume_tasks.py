@@ -34,4 +34,20 @@ def score_resume_task(self, user_id, job_id):
     except Exception as e:
         self.retry(exc=e, countdown=10, max_retries=3)
 
-        
+
+from app.resume.resume_models import store_resume_score
+
+@celery.task(name='resume.score_resume_task', bind=True)
+def score_resume_task(self, user_id, job_id):
+    try:
+        resume_text = get_resume_text_by_user(user_id)
+        job = get_job_by_id(job_id)
+
+        if not resume_text or not job:
+            raise ValueError("Missing resume or job data")
+
+        score = score_resume_against_job(resume_text, job["description"])
+        store_resume_score(user_id, job_id, score)
+        return {"status": "scored", "score": score}
+    except Exception as e:
+        self.retry(exc=e, countdown=10, max_retries=3)

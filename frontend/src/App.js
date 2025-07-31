@@ -19,7 +19,12 @@ import MatchedJobs from './pages/candidate/MatchedJobs';
 import ResumeChat from './pages/candidate/ResumeChat';
 import MyApplications from './pages/candidate/MyApplications';
 import Profile from './pages/shared/Profile';
-
+import CandidateFeedback from './pages/candidate/CandidateFeedback';
+import ScoreByUserId from './pages/company/ScoreByUser';
+import AssignInterview from './pages/company/AssignInterview';
+import ViewInterview from './pages/candidate/ViewInterview';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 function App() {
   return (
@@ -45,6 +50,14 @@ function App() {
       <Route path="/candidate/chat" element={<PrivateRoute role="candidate"><ResumeChat /></PrivateRoute>} />
       <Route path="/candidate/applications" element={<PrivateRoute role="candidate"><MyApplications /></PrivateRoute>} />
       <Route path="/me" element={<PrivateRoute><Profile /></PrivateRoute>} />
+      <Route path="/candidate/feedback" element={<PrivateRoute role="candidate"><CandidateFeedback /></PrivateRoute>} />
+      <Route path="/company/score-by-user" element={<PrivateRoute role="company"><ScoreByUserId /></PrivateRoute>} />
+      <Route path="/company/assign-interview" element={<PrivateRoute role="company"><AssignInterview /></PrivateRoute>} />
+      <Route path="/candidate/interview" element={<PrivateRoute role="candidate"><ViewInterview /></PrivateRoute>} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+
+    
     </Routes>
   );
 }

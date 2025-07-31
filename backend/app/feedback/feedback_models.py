@@ -5,7 +5,7 @@ def add_feedback(user_id, job_id, feedback_text, posted_by):
     try:
         with conn.cursor() as cursor:
             cursor.execute("""
-                INSERT INTO feedback (user_id, job_id, feedback, posted_by)
+                INSERT INTO feedback (user_id, job_id, feedback, hr_id)
                 VALUES (%s, %s, %s, %s)
             """, (user_id, job_id, feedback_text, posted_by))
             conn.commit()
@@ -23,7 +23,7 @@ def get_feedback_for_user_by_job(user_id, job_id):
             cursor.execute("""
                 SELECT f.feedback, f.created_at, u.username AS company_name
                 FROM feedback f
-                JOIN users u ON f.posted_by = u.id
+                JOIN users u ON f.hr_id = u.id
                 WHERE f.user_id = %s AND f.job_id = %s
             """, (user_id, job_id))
             return cursor.fetchall()
@@ -39,7 +39,7 @@ def get_feedback_by_user(user_id):
                 SELECT f.job_id, j.title AS job_title, f.feedback, f.created_at, u.username AS posted_by
                 FROM feedback f
                 JOIN jobs j ON f.job_id = j.id
-                LEFT JOIN users u ON f.posted_by = u.id
+                LEFT JOIN users u ON f.hr_id = u.id
                 WHERE f.user_id = %s
                 ORDER BY f.created_at DESC
             """, (user_id,))

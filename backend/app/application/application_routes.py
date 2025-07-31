@@ -72,17 +72,20 @@ def get_all_applicants_for_company():
         with conn.cursor(pymysql.cursors.DictCursor) as cursor:
             query = """
                 SELECT 
-                    a.id, 
-                    a.user_id, 
-                    a.job_id, 
-                    j.title AS job_title, 
-                    a.status, 
-                    a.applied_at
+                    a.id,
+                    a.user_id,
+                    a.job_id,
+                    a.status,
+                    a.applied_at,
+                    u.username AS candidate_name,
+                    u.email AS candidate_email,
+                    j.title AS job_title
                 FROM applications a
+                JOIN users u ON a.user_id = u.id
                 JOIN jobs j ON a.job_id = j.id
-                ORDER BY a.applied_at DESC;
+                ORDER BY a.applied_at DESC
             """
-            cursor.execute(query, (company_id,))
+            cursor.execute(query)
             return jsonify(cursor.fetchall())
     except Exception as e:
         import traceback; traceback.print_exc()

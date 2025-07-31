@@ -15,7 +15,26 @@ export default function AdminResumeScores() {
   return (
     <div style={{ padding: '30px' }}>
       <h2>Resume Score Analytics</h2>
-      <pre>{JSON.stringify(scores, null, 2)}</pre>
+      <table border="1" cellPadding={8}>
+      <thead>
+        <tr>
+          <th>Job Title</th>
+          <th>Job ID</th>
+          <th>Avg. Resume Score</th>
+          <th>Candidates Scored</th>
+        </tr>
+      </thead>
+      <tbody>
+        {scores.map((row, i) => (
+          <tr key={i}>
+            <td>{row.job_title}</td>
+            <td>{row.job_id}</td>
+            <td>{row.avg_score}</td>
+            <td>{row.num_candidates}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
     </div>
   );
 }
