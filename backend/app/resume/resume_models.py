@@ -1,19 +1,32 @@
 from app.db import get_db_connection
+import json
 
-def store_parsed_resume(user_id, file_path, resume_text):
+def store_parsed_resume(user_id, file_path, resume_text, parsed_data):
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
-            cursor.execute(
-                "REPLACE INTO resumes (user_id, file_path, resume_text) VALUES (%s, %s, %s)",
-                (user_id, file_path, resume_text)
-            )
+            cursor.execute("""
+                REPLACE INTO resumes (user_id, file_path, resume_text, parsed_data)
+                VALUES (%s, %s, %s, %s)
+            """, (user_id, file_path, resume_text, json.dumps(parsed_data)))
             conn.commit()
     except Exception as e:
         conn.rollback()
         raise e
     finally:
         conn.close()
+
+
+def get_parsed_resume_by_user(user_id):
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT parsed_data FROM resumes WHERE user_id = %s", (user_id,))
+            result = cursor.fetchone()
+            return json.loads(result['parsed_data']) if result and result['parsed_data'] else {}
+    finally:
+        conn.close()
+
 
 import os
 def get_resume_text_by_user(user_id):

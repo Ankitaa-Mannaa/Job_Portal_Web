@@ -5,8 +5,8 @@ from werkzeug.utils import secure_filename
 from app.resume.resume_matching import recommend_jobs_for_candidate
 from app.access_control import role_required
 from app.resume.resume_tasks import process_resume_task, score_resume_task
-from app.resume.resume_score import score_resume_against_job
-from app.resume.resume_models import get_resume_text_by_user, store_resume_score
+from app.resume.resume_score import rule_based_score
+from app.resume.resume_models import get_resume_text_by_user, store_resume_score, get_parsed_resume_by_user
 from app.jobs.job_models import get_job_by_id
 from app.application.application_models import get_applications_by_user
 
@@ -186,11 +186,8 @@ def score_resume_by_company():
             return jsonify({'msg': 'Candidate has not applied to this job'}), 403
 
         # Retrieve resume
-        resume_text = get_resume_text_by_user(candidate_id)
-        if not resume_text:
-            return jsonify({'msg': 'Resume not found for candidate'}), 404
-
-        score = score_resume_against_job(resume_text, job['description'])
+        parsed_resume = get_parsed_resume_by_user(candidate_id)
+        score = rule_based_score(parsed_resume, job['description'])
         store_resume_score(candidate_id, job_id, score)
 
         return jsonify({

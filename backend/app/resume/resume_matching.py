@@ -2,8 +2,10 @@ from app.resume.resume_models import get_resume_text_by_user
 from app.resume.embedder import embed_text
 from app.jobs.job_vectorstore import query_similar_jobs
 from app.jobs.job_models import get_job_by_id
-from app.resume.resume_score import score_resume_against_job
 import traceback
+from app.resume.resume_models import get_parsed_resume_by_user
+from app.resume.resume_score import rule_based_score
+
 
 def recommend_jobs_for_candidate(user_id):
     try:
@@ -29,7 +31,8 @@ def recommend_jobs_for_candidate(user_id):
             try:
                 job = get_job_by_id(job_id)
                 if job:
-                    score = score_resume_against_job(resume_text, job['description'])
+                    parsed_resume = get_parsed_resume_by_user(user_id)
+                    score = rule_based_score(parsed_resume, job['description'])
                     results.append({'job': job, 'score': round(score, 2)})
                     print(f" Job {job_id} matched with score: {score:.2f}")
                 else:

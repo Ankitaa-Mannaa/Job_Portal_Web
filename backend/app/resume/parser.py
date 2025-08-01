@@ -1,30 +1,38 @@
 import os
-import fitz  # pymupdf
-
-ALLOWED_EXTENSIONS = ('.pdf',)
+import fitz  # PyMuPDF
+import re
 
 def parse_resume(file_path):
-    # Input validation
-    if not isinstance(file_path, str) or not file_path.strip():
-        raise ValueError("Invalid file path provided.")
-    
-    if not os.path.exists(file_path):
-        raise FileNotFoundError(f"File not found: {file_path}")
+    if not os.path.exists(file_path) or not file_path.endswith(".pdf"):
+        raise ValueError("Invalid PDF path.")
 
-    if not file_path.lower().endswith(ALLOWED_EXTENSIONS):
-        raise ValueError("Unsupported file type. Only PDF files are allowed.")
+    doc = fitz.open(file_path)
+    text = "\n".join([page.get_text() for page in doc])
+    doc.close()
 
-    # Parsing PDF with PyMuPDF
-    try:
-        doc = fitz.open(file_path)
-        text = ""
-        for page in doc:
-            text += page.get_text()
-        doc.close()
+    if not text.strip():
+        raise ValueError("Resume is empty.")
 
-        if not text.strip():
-            raise ValueError("Parsed text is empty. Resume content could not be extracted.")
-        
-        return text
-    except Exception as e:
-        raise RuntimeError(f"Failed to parse resume: {str(e)}")
+    return text, extract_fields(text)
+
+
+def extract_fields(text):
+    text = text.lower()
+
+    # Education (simple example)
+    education_keywords = ["b.tech", "bachelor", "msc", "m.tech", "phd"]
+    education = [kw for kw in education_keywords if kw in text]
+
+    # Experience
+    match = re.search(r"(\d+)\+?\s+(years|yrs)\s+(of)?\s*experience", text)
+    years = int(match.group(1)) if match else 0
+
+    # Skills
+    skill_keywords = ["python", "sql", "flask", "ml", "django", "aws", "react"]
+    skills = [skill for skill in skill_keywords if skill in text]
+
+    return {
+        "education": education,
+        "experience_years": years,
+        "skills": skills
+    }

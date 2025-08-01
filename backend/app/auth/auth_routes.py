@@ -12,6 +12,7 @@ import traceback
 auth_bp = Blueprint('auth', __name__)
 
 EMAIL_REGEX = r'^[\w\.-]+@[\w\.-]+\.\w{2,4}$'
+FRONTEND_RESET_URL = "http://localhost:3000/reset-password"
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
@@ -110,6 +111,8 @@ def login():
 def forgot_password():
     try:
         email = request.json.get('email', '').strip().lower()
+        print(" Forgot password request for:", email)
+
         if not email:
             return jsonify({"msg": "Email is required"}), 400
         if not re.match(EMAIL_REGEX, email):
@@ -117,13 +120,27 @@ def forgot_password():
 
         user = get_user_by_email(email)
         if not user:
+            print(" User not found for email:", email)
             return jsonify({"msg": "User not found"}), 404
 
-        token = create_access_token(identity={"id": user['id'], "role": "reset"}, expires_delta=False)
-        send_reset_email(email, token)
-        return jsonify({"msg": "Reset email sent (mocked)"})
+        # Use string user ID as identity, and set role in claims
+        token = create_access_token(
+            identity=str(user['id']),
+            additional_claims={"role": "reset"},
+            expires_delta=False  # Optional: set to timedelta(minutes=15) for security
+        )
+
+        reset_link = f"{FRONTEND_RESET_URL}?token={token}"
+        print(" Generated reset link:", reset_link)
+
+        # Simulate email
+        return jsonify({
+            "msg": "Reset email sent (mocked)",
+            "reset_link": reset_link
+        })
 
     except Exception as e:
+        print(" Forgot password error:", str(e))
         return jsonify({"msg": "Forgot password failed", "error": str(e)}), 500
 
 
@@ -132,16 +149,24 @@ def reset_password():
     token = request.json.get('token')
     new_password = request.json.get('password')
 
+    print(" Reset request received")
+    print(" Token received:", bool(token))
+    print(" New password received:", bool(new_password))
+
     if not token or not new_password:
         return jsonify({"msg": "Token and new password are required"}), 400
     if len(new_password.strip()) < 6:
         return jsonify({"msg": "Password must be at least 6 characters"}), 400
 
     try:
-        identity = decode_token(token)['sub']
-        user_id = int(get_jwt_identity())
+        decoded = decode_token(token)
+        user_id = int(decoded['sub'])  
+        print(" Token decoded. User ID:", user_id)
+
         hashed = generate_password_hash(new_password)
+
     except Exception as e:
+        print(" Token decoding failed:", str(e))
         return jsonify({"msg": "Invalid or expired token", "error": str(e)}), 400
 
     conn = get_db_connection()
@@ -152,9 +177,11 @@ def reset_password():
                 (hashed, user_id)
             )
             conn.commit()
+            print(" Password updated for user:", user_id)
             return jsonify({"msg": "Password reset successful"})
     except Exception as e:
         conn.rollback()
+        print(" Password reset DB error:", str(e))
         return jsonify({"msg": "Password reset failed", "error": str(e)}), 500
     finally:
         conn.close()

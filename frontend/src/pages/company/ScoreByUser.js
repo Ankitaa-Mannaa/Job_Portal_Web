@@ -71,10 +71,6 @@ export default function ScoreByUserId() {
       {taskId && <p style={styles.task}>⏳ Task started. Task ID: {taskId}</p>}
       {error && <p style={styles.error}>❌ {error}</p>}
 
-      <p style={styles.note}>
-        This uses the <code>/api/resume/score</code> route. Backend may run <strong>synchronously or via Celery</strong>
-        depending on which block is commented in <code>resume_routes.py</code>.
-      </p>
     </div>
   );
 }
