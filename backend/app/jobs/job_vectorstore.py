@@ -34,7 +34,6 @@ def add_job_embedding(job_id, job_description):
 def query_similar_jobs(resume_embedding, top_k=5):
     if not isinstance(resume_embedding, list) or not all(isinstance(x, float) for x in resume_embedding):
         raise ValueError("Resume embedding must be a list of floats")
-
     try:
         results = job_collection.query(
             query_embeddings=[resume_embedding],
