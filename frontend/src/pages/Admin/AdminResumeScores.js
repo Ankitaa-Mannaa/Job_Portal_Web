@@ -7,7 +7,7 @@ export default function AdminResumeScores() {
   const [scores, setScores] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/admin/resume-scores', {
+    axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/admin/resume-scores`, {
       headers: { Authorization: `Bearer ${user.token}` }
     }).then(res => setScores(res.data)).catch(console.error);
   }, [user]);

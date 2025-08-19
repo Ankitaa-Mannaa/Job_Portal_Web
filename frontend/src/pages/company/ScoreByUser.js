@@ -24,7 +24,7 @@ export default function ScoreByUserId() {
   }
 
   try {
-    const res = await axios.post('http://localhost:5000/api/resume/score', {
+    const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/api/resume/score`, {
       user_id,
       job_id
     }, {

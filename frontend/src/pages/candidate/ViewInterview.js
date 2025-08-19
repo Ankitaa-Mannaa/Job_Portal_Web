@@ -10,7 +10,7 @@ export default function ViewInterview() {
 
   const fetchQuestions = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/interview/assigned/${jobId}`, {
+      const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/interview/assigned/${jobId}`, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       setQuestions(res.data.questions);

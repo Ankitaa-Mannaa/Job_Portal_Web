@@ -13,7 +13,7 @@ export default function Profile() {
 
   const handleUpdate = async () => {
     try {
-      await axios.put('http://localhost:5000/api/auth/me', {
+      await axios.put(`${process.env.REACT_APP_API_BASE_URL}/api/auth/me`, {
         name,
         email
       }, {

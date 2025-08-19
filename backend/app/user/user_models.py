@@ -27,6 +27,18 @@ def get_user_by_email(email):
         conn.close()
 
 
+def get_user_by_id(user_id):
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
+            return cursor.fetchone()
+    except Exception as e:
+        raise e
+    finally:
+        conn.close()
+
+
 def update_user_by_id(user_id, name, email):
     conn = get_db_connection()
     try:

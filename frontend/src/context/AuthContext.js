@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import axios from 'axios'; // ✅ required for backend call
+import axios from 'axios'; 
 
 const AuthContext = createContext();
 
@@ -28,7 +28,7 @@ export function AuthProvider({ children }) {
       }
 
       // Call /auth/me to get name + email
-      axios.get('http://localhost:5000/api/auth/me', {
+      axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then(res => {
@@ -58,7 +58,7 @@ export function AuthProvider({ children }) {
   const login = async (token) => {
     localStorage.setItem('token', token);
     try {
-      const res = await axios.get('http://localhost:5000/api/auth/me', {
+      const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser({
@@ -68,10 +68,12 @@ export function AuthProvider({ children }) {
         email: res.data.email,
         token: token,
       });
+      return true;
     } catch (err) {
       console.error('⚠️ Failed to fetch user after login:', err);
       setUser(null);
     }
+    return false;
   };
 
   const logout = () => {

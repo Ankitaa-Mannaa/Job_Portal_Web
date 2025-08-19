@@ -7,7 +7,7 @@ export default function MyApplications() {
   const [apps, setApps] = useState([]);
 
   const fetchApps = () => {
-    axios.get('http://localhost:5000/api/apply/my', {
+    axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/apply/my`, {
       headers: { Authorization: `Bearer ${user.token}` }
     })
     .then(res => setApps(res.data))
@@ -21,7 +21,7 @@ export default function MyApplications() {
   const handleDelete = async (app_id) => {
     if (!window.confirm('Are you sure you want to delete this application?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/apply/${app_id}`, {
+      await axios.delete(`${process.env.REACT_APP_API_BASE_URL}/api/apply/${app_id}`, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       fetchApps();
@@ -39,7 +39,8 @@ export default function MyApplications() {
         <ul style={styles.list}>
           {apps.map(app => (
             <li key={app.application_id} style={styles.card}>
-              <strong>{app.job_title}</strong>
+              <strong>{app.job_title}</strong><br />
+              <em>Posted by: {app.company_name} (Job ID: {app.job_id})</em>
               <p>Status: <span style={styles.status}>{app.status}</span></p>
               <button onClick={() => handleDelete(app.application_id)} style={styles.deleteButton}>
                 ❌ Delete

@@ -10,7 +10,7 @@ export default function ResumeChat() {
   const sendMessage = async () => {
     try {
       console.log("🔐 Sending token:", user?.token);
-      const res = await axios.post('http://localhost:5000/api/chat/', { question: input }, {
+      const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/api/chat/`, { question: input }, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       setReply(res.data.answer);

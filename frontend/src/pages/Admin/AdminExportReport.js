@@ -6,7 +6,7 @@ export default function AdminExportReport() {
   const { user } = useAuth();
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/admin/export-report', {
+    axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/admin/export-report`, {
       headers: { Authorization: `Bearer ${user.token}` },
       responseType: 'blob'
     }).then(res => {

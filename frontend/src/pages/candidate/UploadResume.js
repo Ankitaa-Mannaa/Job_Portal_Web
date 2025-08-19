@@ -14,7 +14,7 @@ export default function UploadResume() {
 
 
     try {
-      const res = await axios.post('http://localhost:5000/api/resume/upload', formData, {
+      const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/api/resume/upload`, formData, {
         headers: {
           Authorization: `Bearer ${user.token}`,
           'Content-Type': 'multipart/form-data'

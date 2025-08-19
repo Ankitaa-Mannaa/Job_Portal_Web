@@ -21,7 +21,7 @@ export default function AdminUsers() {
 
     const fetchUsers = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/admin/users', {
+        const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/admin/users`, {
           headers: {
             Authorization: `Bearer ${user.token}`,
           },
@@ -84,7 +84,7 @@ export default function AdminUsers() {
   async function deleteUser(id) {
     if (!window.confirm(`Delete user ${id}?`)) return;
     try {
-      await axios.delete(`http://localhost:5000/api/admin/users/${id}`, {
+      await axios.delete(`${process.env.REACT_APP_API_BASE_URL}/api/admin/users/${id}`, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       setUsers(users.filter(u => u.id !== id));

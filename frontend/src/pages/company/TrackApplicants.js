@@ -9,7 +9,7 @@ export default function TrackApplicants() {
   const [message, setMessage] = useState('');
 
   const fetchApplications = useCallback(() => {
-    axios.get('http://localhost:5000/api/apply/all', {
+    axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/apply/all`, {
       headers: { Authorization: `Bearer ${user.token}` }
     })
     .then(res => setApps(res.data))
@@ -26,7 +26,7 @@ export default function TrackApplicants() {
 
   const handleUpdate = async (appId) => {
     try {
-      await axios.put(`http://localhost:5000/api/apply/${appId}`, {
+      await axios.put(`${process.env.REACT_APP_API_BASE_URL}/api/apply/${appId}`, {
         status: statusUpdates[appId]
       }, {
         headers: { Authorization: `Bearer ${user.token}` }

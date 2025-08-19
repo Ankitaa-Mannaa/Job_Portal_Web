@@ -20,15 +20,17 @@ const handleSubmit = async (e) => {
 
   try {
     const res = await axios.post(
-      `${process.env.REACT_APP_API_URL}/auth/login`,
+      `${process.env.REACT_APP_API_BASE_URL}/api/auth/login`,
       form
     );
     const token = res.data.access_token;
 
     if (!token) throw new Error("No token received from backend");
 
-    login(token);          // call context login handler
-    navigate('/');
+    const success = await login(token);
+    if (success) {
+      navigate('/');
+    }
     } catch (err) {
       console.error('❌ Login failed:', err);
       setError(
@@ -63,7 +65,23 @@ const handleSubmit = async (e) => {
         {error && <p style={styles.error}>{error}</p>}
         <button type="submit" style={styles.button}>Login</button>
       </form>
+      <div style={{ marginTop: 20 }}>
+      <span>Don't have an account? </span>
+      <button
+        onClick={() => navigate('/register')}
+        style={{
+          background: 'none',
+          border: 'none',
+          color: '#007bff',
+          cursor: 'pointer',
+          textDecoration: 'underline',
+          fontSize: 14
+        }}
+      >
+        Register here
+      </button>
     </div>
+  </div>
   );
 }
 

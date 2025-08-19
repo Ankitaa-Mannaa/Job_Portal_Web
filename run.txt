@@ -18,3 +18,10 @@ run the following in 4 seperate termials
                         1. cd frontend
                         2. npm start
 
+
+backend -->
+
+pkill -f wsgi.py  # if already running
+nohup python app/wsgi.py > backend.log 2>&1 &
+tail -f backend.log
+

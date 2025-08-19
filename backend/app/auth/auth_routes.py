@@ -12,7 +12,7 @@ import traceback
 auth_bp = Blueprint('auth', __name__)
 
 EMAIL_REGEX = r'^[\w\.-]+@[\w\.-]+\.\w{2,4}$'
-FRONTEND_RESET_URL = "http://localhost:3000/reset-password"
+FRONTEND_RESET_URL = "http://localhost:3004/reset-password"
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
@@ -63,7 +63,7 @@ def register():
         conn.rollback()
         return jsonify({"msg": "Registration failed", "error": str(e)}), 500
     finally:
-        conn.close()
+        conn.close() 
 
 
 

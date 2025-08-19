@@ -8,12 +8,12 @@ PERSIST_DIRECTORY = os.getenv("CHROMA_PERSIST_DIR")
 EMBED_MODEL_NAME = os.getenv("EMBED_MODEL")
 
 try:
+    embedding_function = SentenceTransformerEmbeddingFunction(model_name=EMBED_MODEL_NAME)
     client = chromadb.Client(Settings(
         persist_directory=PERSIST_DIRECTORY,
         anonymized_telemetry=False
     ))
-    embedding_function = SentenceTransformerEmbeddingFunction(model_name=EMBED_MODEL_NAME)
-    job_collection = client.get_or_create_collection(name="jobs", embedding_function=embedding_function)
+    job_collection = client.get_or_create_collection(name="jobs")
 except Exception as e:
     raise RuntimeError(f"Failed to initialize ChromaDB (jobs): {str(e)}")
 
@@ -29,6 +29,7 @@ def add_job_embedding(job_id, job_description):
         metadatas=[{"job_id": job_id, "description": job_description}],
         documents=[job_description]
     )
+    print(f" Added job {job_id} to Chroma with embedding size {len(embedding)}")
 
 
 def query_similar_jobs(resume_embedding, top_k=5):

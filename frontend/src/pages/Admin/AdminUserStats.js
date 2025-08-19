@@ -7,7 +7,7 @@ export default function AdminUserStats() {
   const [stats, setStats] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/admin/user-stats', {
+    axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/admin/user-stats`, {
       headers: { Authorization: `Bearer ${user.token}` }
     }).then(res => setStats(res.data)).catch(console.error);
   }, [user]);

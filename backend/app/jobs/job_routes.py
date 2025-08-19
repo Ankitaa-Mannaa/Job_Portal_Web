@@ -8,6 +8,8 @@ from app.jobs.job_models import (create_job,
                                  get_all_jobs_from_db, 
                                  get_jobs_by_company)
 from app.jobs.job_vectorstore import add_job_embedding
+from app.user.user_models import get_user_by_id
+from app.jobs.job_vectorstore import add_job_embedding
 
 job_bp = Blueprint('job', __name__)
 
@@ -78,7 +80,7 @@ def delete_job(job_id):
 
 @job_bp.route('/', methods=['GET'])
 @jwt_required()
-@role_required('admin', 'candidate', 'company')  # ✅ Added 'candidate'
+@role_required('admin', 'candidate', 'company')  # Added 'candidate'
 def get_all_jobs():
     try:
         identity = get_jwt_identity()
@@ -94,7 +96,18 @@ def get_all_jobs():
         else:
             return jsonify({'msg': 'Unauthorized'}), 403
 
-        return jsonify(jobs)
+        enriched_jobs = []
+        if jobs:
+            for job in jobs:
+                company_user = get_user_by_id(job.get('posted_by'))
+                enriched_jobs.append({
+                    'id': job['id'],
+                    'title': job['title'],
+                    'description': job['description'],
+                    'company_name': company_user['username'] if company_user else 'Unknown'
+                })
+
+        return jsonify(enriched_jobs)
     except Exception as e:
         print('❌ Error fetching jobs:', e)
         return jsonify({'msg': 'Failed to retrieve jobs', 'error': str(e)}), 500

@@ -1,5 +1,36 @@
 .venv
 
-backend/app/.env
+.env
 
 __pycache__/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+instance/
+.env
+.venv/
+venv/
+*.log
+
+# Node / React
+node_modules/
+npm-debug.log
+yarn-error.log
+.pnp.*
+.cache/
+dist/
+build/
+
+# VSCode / IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+

@@ -7,7 +7,7 @@ export default function MatchedJobs() {
   const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/resume/recommendations', {
+    axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/resume/recommendations`, {
       headers: { Authorization: `Bearer ${user.token}` }
     }).then(res => setJobs(res.data)).catch(console.error);
   }, [user.token]);

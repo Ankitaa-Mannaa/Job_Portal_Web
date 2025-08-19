@@ -22,7 +22,7 @@ export default function Register() {
 
     try {
       const res = await axios.post(
-        `${process.env.REACT_APP_API_URL}/auth/register`,
+        `${process.env.REACT_APP_API_BASE_URL}/api/auth/register`,
         form
       );
       alert(res.data.msg); // Optional toast
@@ -91,7 +91,7 @@ const styles = {
     margin: '50px auto',
     padding: 20,
     border: '1px solid #ccc',
-    borderRadius: 8,
+    borderRadius: 8, 
     textAlign: 'center',
   },
   form: {

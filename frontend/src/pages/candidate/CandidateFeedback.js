@@ -12,7 +12,7 @@ export default function CandidateFeedback() {
 
   const fetchAllFeedbacks = useCallback(async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/feedback/my', {
+      const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/feedback/my`, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       setAllFeedbacks(res.data);
@@ -31,7 +31,7 @@ export default function CandidateFeedback() {
 
   const fetchFeedbackForJob = async (jobId) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/feedback/for-job/${jobId}`, {
+      const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/feedback/for-job/${jobId}`, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       setFeedbacks(res.data);

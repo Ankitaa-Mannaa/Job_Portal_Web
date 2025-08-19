@@ -10,7 +10,7 @@ export default function PostJob() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/job/', form, {
+      const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/api/job/`, form, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       setMsg(res.data.msg);

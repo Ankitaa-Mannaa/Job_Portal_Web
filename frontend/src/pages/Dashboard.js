@@ -13,67 +13,69 @@ export default function Dashboard() {
 
   return (
     <div style={styles.container}>
-      <h2>Welcome, {user.name?.toUpperCase() || 'User'}!</h2>
-      <p>Your user ID: <strong>{user.id}</strong></p>
+      <h1 style={styles.heading}>Welcome, {user.name?.toUpperCase() || 'User'}!</h1>
+      <p style={styles.userId}>Your user ID: <strong>{user.id}</strong></p>
 
       {user.role === 'admin' && <AdminDashboard />}
       {user.role === 'company' && <CompanyDashboard />}
       {user.role === 'candidate' && <CandidateDashboard />}
 
-      <button onClick={logout} style={styles.logout}>Logout</button>
-      <button onClick={() => navigate('/forgot-password')} style={styles.button}>Forgot Password</button>
-      <button onClick={() => navigate('/reset-password')} style={styles.button}>Reset Password</button>
+      <div style={styles.buttonGroup}>
+        <button onClick={logout} style={styles.logout}>Logout</button>
+        <button onClick={() => navigate('/forgot-password')} style={styles.secondary}>Forgot Password</button>
+        <button onClick={() => navigate('/reset-password')} style={styles.secondary}>Reset Password</button>
+      </div>
     </div>
   );
 }
 
 function AdminDashboard() {
-  return (
-    <div style={styles.box}>
-      <h3>Admin Dashboard</h3>
-      <ul>
-        <li><a href="/me">View My Profile</a></li>
-        <li><a href="/admin/users">View all users</a></li>
-        <li><a href="/admin/resume-scores">Resume score analytics</a></li>
-        <li><a href="/admin/dropoff-analytics">Drop-off insights</a></li>
-        <li><a href="/admin/user-stats">User stats</a></li>
-        <li><a href="/admin/job-stats">Job stats</a></li>
-        <li><a href="/admin/export-report">Export reports</a></li>
-      </ul>
-    </div>
-  );
+  return renderDashboard("Admin", [
+    { label: "View My Profile", path: "/me" },
+    { label: "View All Users", path: "/admin/users" },
+    { label: "Resume Score Analytics", path: "/admin/resume-scores" },
+    { label: "Drop-off Insights", path: "/admin/dropoff-analytics" },
+    { label: "User Stats", path: "/admin/user-stats" },
+    { label: "Job Stats", path: "/admin/job-stats" },
+    { label: "Export Reports", path: "/admin/export-report" },
+  ]);
 }
 
 function CompanyDashboard() {
-  return (
-    <div style={styles.box}>
-      <h3>Company Dashboard</h3>
-      <ul style={styles.ul}>
-        <li><a href="/me">View My Profile</a></li>
-        <li><a href="/company/post-job">Post a Job</a></li>
-        <li><a href="/company/applicants">Track Applicants</a></li>
-        <li><a href="/company/feedback">Submit Feedback</a></li>
-        <li><a href="/company/view-jobs">View Posted Jobs</a></li>
-        <li><a href="/company/score-by-user">Get Score Resume by User ID</a></li>
-        <li><a href="/company/assign-interview">Assign Interview</a></li>
-      </ul>
-    </div>
-  );
+  return renderDashboard("Company", [
+    { label: "View My Profile", path: "/me" },
+    { label: "Post a Job", path: "/company/post-job" },
+    { label: "Track Applicants", path: "/company/applicants" },
+    { label: "Submit Feedback", path: "/company/feedback" },
+    { label: "View Posted Jobs", path: "/company/view-jobs" },
+    { label: "Score Resume by User ID", path: "/company/score-by-user" },
+    { label: "Assign Interview", path: "/company/assign-interview" },
+  ]);
 }
 
 function CandidateDashboard() {
+  return renderDashboard("Candidate", [
+    { label: "View My Profile", path: "/me" },
+    { label: "Upload Resume", path: "/candidate/upload-resume" },
+    { label: "View All Jobs", path: "/candidate/jobs" },
+    { label: "View Matched Jobs", path: "/candidate/matched" },
+    { label: "AI Chat About Resume", path: "/candidate/chat" },
+    { label: "My Applications", path: "/candidate/applications" },
+    { label: "My Interview Questions", path: "/candidate/interview" },
+    { label: "View Feedback from Companies", path: "/candidate/feedback" },
+  ]);
+}
+
+function renderDashboard(title, links) {
   return (
-    <div style={styles.box}>
-      <h3>Candidate Dashboard</h3>
-      <ul style={styles.ul}>
-        <li><a href="/me">View My Profile</a></li>
-        <li><a href="/candidate/upload-resume">Upload Resume</a></li>
-        <li><a href="/candidate/jobs">View All Jobs</a></li>
-        <li><a href="/candidate/matched">View Matched Jobs</a></li>
-        <li><a href="/candidate/chat">AI Chat about Resume</a></li>
-        <li><a href="/candidate/applications">My Applications</a></li>
-        <li><a href="/candidate/interview">My Interview Questions</a></li>
-        <li><a href="/candidate/feedback">View Feedback from Companies</a></li>
+    <div style={styles.card}>
+      <h2 style={styles.subheading}>{title} Dashboard</h2>
+      <ul style={styles.linkList}>
+        {links.map(({ label, path }) => (
+          <li key={path}>
+            <a href={path} style={styles.link}>{label}</a>
+          </li>
+        ))}
       </ul>
     </div>
   );
@@ -82,43 +84,77 @@ function CandidateDashboard() {
 const styles = {
   container: {
     maxWidth: 600,
-    margin: '50px auto',
-    padding: 20,
+    margin: '60px auto',
+    padding: '30px 40px',
     border: '1px solid #ccc',
-    borderRadius: 8,
+    borderRadius: 12,
+    backgroundColor: '#ffffff',
     textAlign: 'center',
+    boxShadow: '0 8px 20px rgba(0,0,0,0.1)',
   },
-  box: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#f5f5f5',
-    border: '1px solid #bbb',
-    borderRadius: 6,
+  heading: {
+    fontSize: '26px',
+    marginBottom: '10px',
+    color: '#333',
+  },
+  userId: {
+    marginBottom: '30px',
+    fontSize: '16px',
+    color: '#555',
+  },
+  subheading: {
+    fontSize: '20px',
+    marginBottom: 20,
+    color: '#444',
+  },
+  card: {
+    marginBottom: 30,
+    padding: 20,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 10,
+    border: '1px solid #ddd',
+  },
+  linkList: {
+    listStyle: 'none',
+    padding: 0,
+    margin: 0,
+  },
+  link: {
+    display: 'block',
+    padding: '8px 0',
+    textDecoration: 'none',
+    color: '#007bff',
+    fontWeight: 'bold',
+    transition: 'color 0.2s',
   },
   logout: {
-    marginTop: 30,
     padding: '10px 20px',
-    backgroundColor: '#d9534f',
-    color: 'white',
-    border: 'none',
-    borderRadius: 5,
+    backgroundColor: '#dc3545',
+    color: '#fff',
     fontWeight: 'bold',
+    border: 'none',
+    borderRadius: 6,
+    marginBottom: 10,
     cursor: 'pointer',
+    width: '100%',
+  },
+  secondary: {
+    padding: '10px 20px',
+    backgroundColor: '#007bff',
+    color: '#fff',
+    fontWeight: 'bold',
+    border: 'none',
+    borderRadius: 6,
+    marginBottom: 10,
+    cursor: 'pointer',
+    width: '100%',
+  },
+  buttonGroup: {
+    marginTop: 20,
   },
   loading: {
     textAlign: 'center',
-    marginTop: '100px',
-    fontSize: '20px',
+    marginTop: 100,
+    fontSize: 20,
   },
-  button: {
-  marginTop: 10,
-  padding: '10px 20px',
-  backgroundColor: '#0275d8',
-  color: 'white',
-  border: 'none',
-  borderRadius: 5,
-  fontWeight: 'bold',
-  cursor: 'pointer',
-  width: '100%',
- }
 };

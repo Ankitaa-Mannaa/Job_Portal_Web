@@ -39,10 +39,23 @@ def create_app():
     app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
     app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY")
     
-    CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
+    @app.after_request
+    def add_cors_headers(response):
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
+        return response
+
+    
+    CORS(app, resources={r"/api/*": {"origins": [
+        "http://localhost:3004",
+        "http://localhost:3000",
+        "http://116.202.210.102:3000",
+        "http://116.202.210.102:3004"
+    ]}}, supports_credentials=True)
 
     jwt = JWTManager(app)
-    api = Api(app, doc='/docs')
+    api = Api(app, doc='/docs', serve_challenge_on_401=False)
+
 
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
     app.register_blueprint(chatbot_bp, url_prefix="/api/chat")

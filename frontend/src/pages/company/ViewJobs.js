@@ -12,7 +12,7 @@ export default function ViewJobs() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/job/', {
+        const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/job/`, {
           headers: { Authorization: `Bearer ${user.token}` }
         });
         setJobs(res.data);
@@ -27,7 +27,7 @@ export default function ViewJobs() {
   const handleDelete = async (jobId) => {
     if (!window.confirm('Are you sure you want to delete this job?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/job/${jobId}`, {
+      await axios.delete(`${process.env.REACT_APP_API_BASE_URL}/api/job/${jobId}`, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       setJobs(jobs.filter(j => j.id !== jobId));
@@ -45,7 +45,7 @@ export default function ViewJobs() {
 
   const handleUpdate = async (jobId) => {
     try {
-      const res = await axios.put(`http://localhost:5000/api/job/${jobId}`, editForm, {
+      const res = await axios.put(`${process.env.REACT_APP_API_BASE_URL}/api/job/${jobId}`, editForm, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       setMessage(res.data.msg);

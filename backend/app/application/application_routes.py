@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.access_control import role_required
 from app.application.application_models import create_application, get_applications_by_user, update_application_status_by_id, delete_application_by_id
 from app.jobs.job_models import get_job_by_id
+from app.user.user_models import get_user_by_id  # Add at top if not already imported
 from app.db import get_db_connection
 import pymysql.cursors
 
@@ -27,17 +28,20 @@ def apply_job():
 @role_required('candidate')
 def my_applications():
     user_id = int(get_jwt_identity())
-    apps = get_applications_by_user(user_id)
+    apps = get_applications_by_user(user_id) or []
 
     detailed_apps = []
     for app in apps:
         job = get_job_by_id(app['job_id'])
         if job:
+            poster = get_user_by_id(job['posted_by']) if job and job.get('posted_by') else None
+
             detailed_apps.append({
                 'application_id': app['id'],
                 'status': app['status'],
                 'job_id': app['job_id'],
-                'job_title': job['title']
+                'job_title': job['title'],
+                'company_name': poster['username'] if poster else 'Unknown'
             })
 
     return jsonify(detailed_apps)
@@ -47,12 +51,14 @@ def my_applications():
 @jwt_required()
 @role_required('company', 'admin')
 def update_application_status(app_id):
-    status = request.json.get('status')
+    data = request.get_json()
+    status = data.get('status') if data else None
     if not status:
         return jsonify({'msg': 'Status required'}), 400
 
     update_application_status_by_id(app_id, status)
     return jsonify({'msg': 'Application status updated'})
+
 
 @application_bp.route('/<int:app_id>', methods=['DELETE'])
 @jwt_required()

@@ -8,14 +8,14 @@ export default function AllJobs() {
   const [msg, setMsg] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/job/', {
+    axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/job/`, {
       headers: { Authorization: `Bearer ${user.token}` }
     }).then(res => setJobs(res.data)).catch(console.error);
   }, [user.token]);
 
   const applyToJob = async (job_id) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/apply/', { job_id }, {
+      const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/api/apply/`, { job_id }, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
       setMsg(res.data.msg);
@@ -31,8 +31,9 @@ export default function AllJobs() {
       <ul>
         {jobs.map(job => (
           <li key={job.id} style={styles.job}>
-            <strong>{job.title}</strong><br />
-            <em>{job.description}</em><br />
+            <strong>{job.title}</strong> (ID: {job.id}) <br />
+            <em>Company: {job.company_name}</em> <br />
+            <p>{job.description}</p>
             <button onClick={() => applyToJob(job.id)}>Apply</button>
           </li>
         ))}
