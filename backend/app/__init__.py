@@ -5,7 +5,6 @@ from flask_restx import Api
 from dotenv import load_dotenv
 import os
 
-
 load_dotenv()
 
 from app.auth.auth_routes import auth_bp
@@ -47,10 +46,10 @@ def create_app():
 
     
     CORS(app, resources={r"/api/*": {"origins": [
-        "http://localhost:3004",
         "http://localhost:3000",
+        "http://localhost:5181",
         "http://116.202.210.102:3000",
-        "http://116.202.210.102:3004"
+        "http://116.202.210.102:5181"
     ]}}, supports_credentials=True)
 
     jwt = JWTManager(app)

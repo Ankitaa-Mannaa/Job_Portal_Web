@@ -88,7 +88,7 @@ def get_all_jobs():
 
         if role == 'admin':
             jobs = get_all_jobs_from_db()
-        elif role == 'company':
+        elif role == 'company': 
             company_id = int(identity)
             jobs = get_jobs_by_company(company_id)
         elif role == 'candidate':
@@ -103,9 +103,9 @@ def get_all_jobs():
                 enriched_jobs.append({
                     'id': job['id'],
                     'title': job['title'],
-                    'description': job['description'],
+                    'description': job['description'], 'posted_by': job['posted_by'],
                     'company_name': company_user['username'] if company_user else 'Unknown'
-                })
+                }) 
 
         return jsonify(enriched_jobs)
     except Exception as e:

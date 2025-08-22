@@ -1,19 +1,21 @@
 User Stats
 Total Users,Admins,Companies,Candidates
-4,1,1,2
+6,1,2,3
 
 Job Stats
 Total Jobs,Avg. Applications/Job,Most Applied Job,Total Apps for That Job
-3,1.50,Business Analyst,2
+3,1.00,Software Engineer,1
 
 Average Resume Score Per Job
 Job Title,Job ID,Avg Score,Candidates Scored
-Business Analyst,2,14.1,1
+Software Engineer,4,43.33,1
+react developer,5,0.0,1
 
 Drop-off Analytics
 Resume Uploaded,Total Applications,Applied Without Resume
-2,3,0
+3,2,0
 
 Raw Resume Scores
 User ID,Username,Job ID,Job Title,Score
-5,rakhi,2,Business Analyst,14.1
+2,Rakhi,4,Software Engineer,43.33
+6,test02,5,react developer,0.0

@@ -30,15 +30,33 @@ def get_dropoff_data():
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
+            # 1. Grouped drop-off counts by application status
             cursor.execute("""
-                SELECT a.id, u.email, j.title, a.status, f.id AS feedback_id
+                SELECT a.status, COUNT(*) as count
+                FROM applications a
+                LEFT JOIN feedback f 
+                  ON a.user_id = f.user_id AND a.job_id = f.job_id
+                WHERE f.id IS NULL
+                GROUP BY a.status
+            """)
+            dropoff_summary = cursor.fetchall()
+
+            # 2. Detailed list of applications without feedback
+            cursor.execute("""
+                SELECT a.id AS application_id, u.username, u.email, j.title AS job_title, a.status
                 FROM applications a
                 JOIN users u ON a.user_id = u.id
                 JOIN jobs j ON a.job_id = j.id
-                LEFT JOIN feedback f ON a.user_id = f.user_id AND a.job_id = f.job_id
+                LEFT JOIN feedback f 
+                  ON a.user_id = f.user_id AND a.job_id = f.job_id
                 WHERE f.id IS NULL
             """)
-            return cursor.fetchall()
+            no_feedback_list = cursor.fetchall()
+
+            return {
+                "summary": dropoff_summary,
+                "no_feedback": no_feedback_list
+            }
     finally:
         conn.close()
 

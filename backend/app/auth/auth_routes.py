@@ -93,7 +93,7 @@ def login():
             cursor.execute("SELECT name FROM roles WHERE id = %s", (user['role_id'],)) 
             role_row = cursor.fetchone()
             role = role_row['name'] if role_row else 'candidate'
-
+ 
             # 3. Embed both id and role into JWT
             token = create_access_token(
                 identity=str(user['id']),

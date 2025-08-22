@@ -36,11 +36,18 @@ def upload_resume():
     try:
 
         # FOR DEVELOPMENT: run synchronously to avoid Celery
-        result = process_resume_task(user_id, filepath)
+        
+
+        resume_data = {
+            "filename": filename,
+            "file_url": f"{request.host_url}uploads/{filename}", 
+            "status": "active",
+            "user_id": user_id
+        }
 
         return jsonify({
             'msg': 'Resume uploaded and processed (synchronously)',
-            'result': result  # whatever your task returns
+            'result': resume_data
         }), 200
 
 # --------------------------------------------------------------------------------------------
@@ -54,7 +61,7 @@ def upload_resume():
 
 # --------------------------------------------------------------------------------------------
 
-    except Exception as e:
+    except Exception as e: 
         print("❌ Upload failed:", e)
         import traceback; traceback.print_exc()  # <-- shows full error
         return jsonify({'msg': 'Upload failed', 'error': str(e)}), 500

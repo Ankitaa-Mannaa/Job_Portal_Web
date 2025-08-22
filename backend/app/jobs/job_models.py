@@ -87,4 +87,4 @@ def get_jobs_by_company(company_id):
             return cursor.fetchall()
     finally:
         conn.close()
-
+ 

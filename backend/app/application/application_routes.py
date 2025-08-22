@@ -5,7 +5,7 @@ from app.application.application_models import create_application, get_applicati
 from app.jobs.job_models import get_job_by_id
 from app.user.user_models import get_user_by_id  # Add at top if not already imported
 from app.db import get_db_connection
-import pymysql.cursors
+import pymysql.cursors 
 
 application_bp = Blueprint('application', __name__)
  
@@ -16,7 +16,7 @@ def apply_job():
     data = request.get_json()
     user_id = int(get_jwt_identity())
     job_id = data.get('job_id')
-
+ 
     if not job_id:
         return jsonify({'msg': 'job_id is required'}), 400
 
@@ -89,6 +89,7 @@ def get_all_applicants_for_company():
                 FROM applications a
                 JOIN users u ON a.user_id = u.id
                 JOIN jobs j ON a.job_id = j.id
+                WHERE j.posted_by = %s
                 ORDER BY a.applied_at DESC
             """
             cursor.execute(query)

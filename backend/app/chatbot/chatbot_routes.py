@@ -38,6 +38,6 @@ def chat_about_resume():
 @jwt_required()
 @role_required('candidate')
 def view_chat_history():
-    user_id = get_jwt_identity()['id']
+    user_id = int(get_jwt_identity())
     history = get_chat_history(user_id)
     return jsonify(history)
