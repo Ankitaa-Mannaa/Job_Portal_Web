@@ -110,4 +110,6 @@ def get_all_jobs():
         return jsonify(enriched_jobs)
     except Exception as e:
         print('❌ Error fetching jobs:', e)
-        return jsonify({'msg': 'Failed to retrieve jobs', 'error': str(e)}), 500
+        return jsonify({'msg': 'Failed to retrieve jobs', 'error': str(e)}), 500 
+    
+
