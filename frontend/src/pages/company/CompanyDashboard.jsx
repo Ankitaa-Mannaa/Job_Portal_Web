@@ -13,6 +13,7 @@ import {
   Eye,
   AlertCircle,
   Loader2,
+  Target
 } from "lucide-react";
 
 const API = import.meta.env.VITE_API_BASE_URL;
@@ -65,12 +66,12 @@ export default function CompanyDashboard() {
           });
 
         const interviewPromise = axios
-        .get(`${API}/api/apply/stats/interviews`, { headers })
-        .then((res) => setInterviewCount(res.data.total_interviews || 0))
-        .catch((err) => {
-          console.error("Interview stats fetch failed:", err.response?.data || err.message);
-          setInterviewCount(0);
-        });
+          .get(`${API}/api/apply/stats/interviews`, { headers })
+          .then((res) => setInterviewCount(res.data.total_interviews || 0))
+          .catch((err) => {
+            console.error("Interview stats fetch failed:", err.response?.data || err.message);
+            setInterviewCount(0);
+          });
 
         const feedbackPromise = axios
           .get(`${API}/api/feedback/stats/company`, { headers })
@@ -102,20 +103,32 @@ export default function CompanyDashboard() {
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-gradient-to-r from-orange-700 to-orange-400 rounded-2xl p-6 text-white shadow">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold">Company Dashboard</h1>
             <p className="text-white/90 mt-1">
               Manage your hiring process end-to-end with our comprehensive tools.
             </p>
           </div>
-          <Link
-            to="/company/post-job"
-            className="inline-flex items-center gap-2 bg-white text-orange-900 px-4 py-2 rounded-xl font-medium shadow hover:shadow-md transition"
-          >
-            <PlusCircle className="h-5 w-5" />
-            Post a Job
-          </Link>
+
+          <div className="flex items-center gap-3">
+            <Link
+              to="/company/post-job"
+              className="inline-flex items-center gap-2 bg-white text-orange-900 px-4 py-2 rounded-xl font-medium shadow hover:shadow-md transition"
+            >
+              <PlusCircle className="h-5 w-5" />
+              Post a Job
+            </Link>
+
+            {/* NEW: View Jobs button beside Post Job */}
+            <Link
+              to="/company/view-jobs"
+              className="inline-flex items-center gap-2 bg-white text-orange-900 px-4 py-2 rounded-xl font-medium shadow hover:shadow-md transition"
+            >
+              <Eye className="h-5 w-5" />
+              View Jobs
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -156,31 +169,40 @@ export default function CompanyDashboard() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <ActionCard
-          to="/company/post-job"
-          icon={PlusCircle}
-          title="Post Job"
-          desc="Create new job openings with detailed requirements"
-          primary
-        />
+        {/* 1) Manage Applicants — FIRST and PRIMARY (orange) */}
         <ActionCard
           to="/company/applicants"
           icon={Users}
           title="Manage Applicants"
           desc="Review and process candidate applications"
+          primary
         />
+
+        {/* 2) Post Job — now non-primary */}
+        <ActionCard
+          to="/company/post-job"
+          icon={PlusCircle}
+          title="Post Job"
+          desc="Create new job openings with detailed requirements"
+        />
+
+        {/* 3) Assign Interview */}
         <ActionCard
           to="/company/assign-interview"
           icon={CalendarCheck2}
           title="Assign Interview"
           desc="Schedule and manage interview rounds"
         />
+
+        {/* 4) Score Resume — replaces View Jobs card */}
         <ActionCard
-          to="/company/view-jobs"
-          icon={Eye}
-          title="View Jobs"
-          desc="Monitor all your active job postings"
+          to="/company/score-resume"
+          icon={Target}
+          title="Score Resume"
+          desc="Get ML based match score for a candidate"
         />
+
+        {/* 5) Submit Feedback */}
         <ActionCard
           to="/company/feedback"
           icon={MessageSquare}
@@ -206,9 +228,7 @@ export default function CompanyDashboard() {
                 <RowItem
                   key={job.id}
                   title={job.title || "Untitled Job"}
-                  meta={`Job ID: ${job.id} ${
-                    job.company_name ? `• ${job.company_name}` : ""
-                  }`}
+                  meta={`Job ID: ${job.id} ${job.company_name ? `• ${job.company_name}` : ""}`}
                   right=""
                   to={`/company/view-jobs?highlight=${job.id}`}
                 />
@@ -286,9 +306,7 @@ function ActionCard({ to, icon: Icon, title, desc, primary = false }) {
             primary ? "bg-white/15" : "bg-orange-50"
           }`}
         >
-          <Icon
-            className={`h-5 w-5 ${primary ? "text-white" : "text-orange-600"}`}
-          />
+          <Icon className={`h-5 w-5 ${primary ? "text-white" : "text-orange-600"}`} />
         </div>
         <ChevronRight
           className={`h-5 w-5 group-hover:translate-x-0.5 transition ${
@@ -297,23 +315,14 @@ function ActionCard({ to, icon: Icon, title, desc, primary = false }) {
         />
       </div>
       <div className="mt-4 text-lg font-semibold">{title}</div>
-      <p
-        className={`text-sm mt-1 ${
-          primary ? "text-white/90" : "text-gray-600"
-        }`}
-      >
-        {desc}
-      </p>
+      <p className={`text-sm mt-1 ${primary ? "text-white/90" : "text-gray-600"}`}>{desc}</p>
     </Link>
   );
 }
 
 function RowItem({ title, meta, right, to }) {
   return (
-    <Link
-      to={to}
-      className="block hover:bg-orange-50/40 rounded-lg px-3 -mx-3 py-3"
-    >
+    <Link to={to} className="block hover:bg-orange-50/40 rounded-lg px-3 -mx-3 py-3">
       <div className="flex items-center justify-between">
         <div className="min-w-0 flex-1">
           <div className="font-medium text-gray-900 truncate">{title}</div>
@@ -334,10 +343,7 @@ function Panel({ title, icon: Icon, actionLabel, onAction, children }) {
           {title}
         </div>
         {actionLabel && (
-          <button
-            onClick={onAction}
-            className="text-sm text-orange-700 hover:underline"
-          >
+          <button onClick={onAction} className="text-sm text-orange-700 hover:underline">
             {actionLabel} →
           </button>
         )}
