@@ -8,13 +8,14 @@ from app.feedback.feedback_models import (
 )
 from app.jobs.job_models import get_job_by_id
 from app.application.application_models import get_applications_by_user
+from app.db import get_db_connection
 
 feedback_bp = Blueprint('feedback', __name__)
 
-# Give feedback (HR/Admin) — secured to jobs they posted and valid applicants only
+# Give feedback (HR/Admin)
 @feedback_bp.route('/', methods=['POST'])
 @jwt_required()
-@role_required('company', 'admin')
+@role_required('company', 'admin') 
 def give_feedback():
     print("🔐 Logged-in HR ID:", get_jwt_identity())
     data = request.get_json()
@@ -91,3 +92,30 @@ def get_feedback_for_job(job_id):
     except Exception as e:
         import traceback; traceback.print_exc()
         return jsonify({'msg': 'Failed to fetch feedback for job', 'error': str(e)}), 500
+
+
+@feedback_bp.route('/stats/company', methods=['GET'])
+@jwt_required()
+@role_required('company', 'admin')
+def feedback_stats_for_company():
+    hr_id = get_jwt_identity()
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                SELECT COUNT(*) AS pending
+                FROM applications a
+                JOIN jobs j ON a.job_id = j.id
+                WHERE j.posted_by = %s
+                  AND NOT EXISTS (
+                      SELECT 1 FROM feedback f
+                      WHERE f.user_id = a.user_id AND f.job_id = a.job_id
+                  )
+            """, (hr_id,))
+            result = cursor.fetchone()
+            return jsonify(result or {"pending": 0})
+    except Exception as e:
+        import traceback; traceback.print_exc()
+        return jsonify({"msg": "Failed to fetch feedback stats", "error": str(e)}), 500
+    finally:
+        conn.close()

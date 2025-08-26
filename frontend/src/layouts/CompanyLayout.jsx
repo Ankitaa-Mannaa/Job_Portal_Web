@@ -75,22 +75,6 @@ const CompanyLayout = () => {
             </Link>
 
             <Link
-              to="/company/post-job"
-              className={`flex items-center px-3 py-2 rounded-lg transition-all duration-200 ${
-                isActive("/company/post-job")
-                  ? "bg-orange-400/20 text-orange-100 shadow-md scale-105"
-                  : "hover:bg-white/20 hover:text-orange-200"
-              }`}
-            >
-              <div className="h-10 w-10 flex items-center justify-center rounded-full bg-white shadow shrink-0">
-                <Briefcase className="h-5 w-5 text-orange-900" />
-              </div>
-              <span className="ml-3 text-white hidden group-hover:inline text-sm font-bold">
-                Post a Job
-              </span>
-            </Link>
-
-            <Link
               to="/company/applicants"
               className={`flex items-center px-3 py-2 rounded-lg transition-all duration-200 ${
                 isActive("/company/applicants")
@@ -102,55 +86,7 @@ const CompanyLayout = () => {
                 <Users className="h-5 w-5 text-orange-900" />
               </div>
               <span className="ml-3 text-white hidden group-hover:inline text-sm font-bold">
-                Track Applicants
-              </span>
-            </Link>
-
-            <Link
-              to="/company/view-jobs"
-              className={`flex items-center px-3 py-2 rounded-lg transition-all duration-200 ${
-                isActive("/company/view-jobs")
-                  ? "bg-orange-400/20 text-orange-100 shadow-md scale-105"
-                  : "hover:bg-white/20 hover:text-orange-200"
-              }`}
-            >
-              <div className="h-10 w-10 flex items-center justify-center rounded-full bg-white shadow shrink-0">
-                <FileText className="h-5 w-5 text-orange-900" />
-              </div>
-              <span className="ml-3 text-white hidden group-hover:inline text-sm font-bold">
-                View Jobs
-              </span>
-            </Link>
-
-            <Link
-              to="/company/feedback"
-              className={`flex items-center px-3 py-2 rounded-lg transition-all duration-200 ${
-                isActive("/company/feedback")
-                  ? "bg-orange-400/20 text-orange-100 shadow-md scale-105"
-                  : "hover:bg-white/20 hover:text-orange-200"
-              }`}
-            >
-              <div className="h-10 w-10 flex items-center justify-center rounded-full bg-white shadow shrink-0">
-                <ClipboardList className="h-5 w-5 text-orange-900" />
-              </div>
-              <span className="ml-3 text-white hidden group-hover:inline text-sm font-bold">
-                Submit Feedback
-              </span>
-            </Link>
-
-            <Link
-              to="/company/assign-interview"
-              className={`flex items-center px-3 py-2 rounded-lg transition-all duration-200 ${
-                isActive("/company/assign-interview")
-                  ? "bg-orange-400/20 text-orange-100 shadow-md scale-105"
-                  : "hover:bg-white/20 hover:text-orange-200"
-              }`}
-            >
-              <div className="h-10 w-10 flex items-center justify-center rounded-full bg-white shadow shrink-0">
-                <CalendarCheck2 className="h-5 w-5 text-orange-900" />
-              </div>
-              <span className="ml-3 text-white hidden group-hover:inline text-sm font-bold">
-                Assign Interview
+                Manage Applicants
               </span>
             </Link>
 

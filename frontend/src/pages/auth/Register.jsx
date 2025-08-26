@@ -91,7 +91,6 @@ const Register = () => {
           >
             <option value="candidate">Candidate</option>
             <option value="company">Company</option>
-            <option value="admin">Admin</option>
           </select>
 
           <button

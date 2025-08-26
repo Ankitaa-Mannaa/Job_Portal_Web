@@ -92,10 +92,35 @@ def get_all_applicants_for_company():
                 WHERE j.posted_by = %s
                 ORDER BY a.applied_at DESC
             """
-            cursor.execute(query)
+            cursor.execute(query, (company_id,))
             return jsonify(cursor.fetchall())
     except Exception as e:
         import traceback; traceback.print_exc()
         return jsonify({"msg": "Error retrieving applicants", "error": str(e)}), 500
+    finally:
+        conn.close()
+
+
+@application_bp.route('/stats/interviews', methods=['GET'])
+@jwt_required()
+@role_required('company', 'admin')
+def interview_stats_from_applications():
+    company_id = int(get_jwt_identity())
+    conn = get_db_connection()
+    try:
+        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            query = """
+                SELECT COUNT(*) AS total_interviews
+                FROM applications a
+                JOIN jobs j ON a.job_id = j.id
+                WHERE j.posted_by = %s
+                  AND LOWER(a.status) = 'interview'
+            """
+            cursor.execute(query, (company_id,))
+            result = cursor.fetchone()
+            return jsonify(result or {"total_interviews": 0})
+    except Exception as e:
+        import traceback; traceback.print_exc()
+        return jsonify({"msg": "Error retrieving interview stats", "error": str(e)}), 500
     finally:
         conn.close()

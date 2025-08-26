@@ -50,7 +50,7 @@ def assign_interview():
             'msg': 'Questions assigned successfully',
             'questions': questions
         }), 200
-
+ 
         # ---------------------------------
         # Celery logic for production (off)
         # ---------------------------------

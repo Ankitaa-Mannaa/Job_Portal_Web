@@ -39,11 +39,16 @@ import Feedback from "./pages/candidate/Feedback";
 import UploadResume from "./pages/candidate/UploadResume";
 import AIChat from "./pages/candidate/AIChat";
 import MatchedJobs from "./pages/candidate/MatchedJobs";
+import AssignedQuestions from "./pages/candidate/AssignedQuestions";
 
 // company pages
 import PostJob from "./pages/company/PostJob";
 import CompanyViewJobs from "./pages/company/CompanyJobs";
-import TrackApplicants from "./pages/company/TrackApplicants"
+import TrackApplicants from "./pages/company/TrackApplicants";
+import SubmitFeedback from "./pages/company/SubmitFeedback";
+import AssignInterview from "./pages/company/AssignInterview";
+import ScoreResume from "./pages/company/ScoreResume";
+
 
 function App() {
   const { user, authLoading } = useAuth();
@@ -116,6 +121,9 @@ function App() {
         <Route path="post-job" element={<PostJob />} />
         <Route path="view-jobs" element={<CompanyViewJobs />} />
         <Route path="applicants" element={<TrackApplicants/>} />
+        <Route path="feedback" element={<SubmitFeedback/>} />
+        <Route path="assign-interview" element={<AssignInterview/>} />
+        <Route path="score-resume" element={<ScoreResume />} />
       </Route>
 
       {/* Candidate routes */}
@@ -135,6 +143,7 @@ function App() {
         <Route path="upload-resume" element={<UploadResume/>} />
         <Route path="ai-chat" element={<AIChat />} />
         <Route path="matched-jobs" element={<MatchedJobs />} />
+        <Route path="assigned-questions" element={<AssignedQuestions />} />
       </Route>
 
       {/* Catch-all */}
