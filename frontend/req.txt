@@ -1,0 +1,57 @@
+frontend/
+│── public/                     # static assets (favicon, index.html, etc.)
+│
+└── src/
+    │── assets/                 # images, logos, icons
+    │── components/             # reusable UI components (Navbar, Sidebar, Button, etc.)
+    │── context/                # AuthContext, ThemeContext, etc.
+    │── hooks/                  # custom React hooks (e.g. useAuth, useFetch)
+    │── layouts/                # common layouts (AdminLayout, CompanyLayout, CandidateLayout, DashboardLayout)
+    │── utils/                  # helper functions, constants
+    │── services/               # API calls (axios wrappers)
+    │── routes/                 # PrivateRoute, RoleBasedRoute
+    │── types.ts                # TypeScript types (if using TS)
+    │
+    │── pages/
+    │   │── auth/               # Auth-related pages
+    │   │   ├── Login.jsx
+    │   │   ├── Register.jsx
+    │   │   ├── ForgotPassword.jsx
+    │   │   └── ResetPassword.jsx
+    │   │
+    │   │── admin/              # Admin-only pages
+    │   │   ├── AdminDashboard.jsx
+    │   │   ├── AdminUsers.jsx
+    │   │   ├── AdminUserStats.jsx
+    │   │   ├── AdminJobStats.jsx
+    │   │   ├── AdminExportReport.jsx
+    │   │   ├── AdminResumeScores.jsx
+    │   │   └── AdminDropoffAnalytics.jsx
+    │   │
+    │   │── company/            # Company-only pages
+    │   │   ├── CompanyDashboard.jsx
+    │   │   ├── PostJob.jsx
+    │   │   ├── TrackApplicants.jsx
+    │   │   ├── SubmitFeedback.jsx
+    │   │   ├── ViewJobs.jsx
+    │   │   ├── ScoreByUser.jsx
+    │   │   └── AssignInterview.jsx
+    │   │
+    │   │── candidate/          # Candidate-only pages
+    │   │   ├── CandidateDashboard.jsx
+    │   │   ├── UploadResume.jsx
+    │   │   ├── AllJobs.jsx
+    │   │   ├── MatchedJobs.jsx
+    │   │   ├── ResumeChat.jsx
+    │   │   ├── MyApplications.jsx
+    │   │   ├── CandidateFeedback.jsx
+    │   │   └── ViewInterview.jsx
+    │   │
+    │   └── shared/             # shared pages across roles
+    │       └── Profile.jsx
+    │
+    │── App.jsx                 # main routing file
+    │── main.jsx                # React entry point (wrap with BrowserRouter, AuthProvider)
+    │── index.css               # Tailwind CSS
+    │
+    └── vite.config.js

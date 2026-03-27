@@ -1,0 +1,21 @@
+User Stats
+Total Users,Admins,Companies,Candidates
+7,1,2,4
+
+Job Stats
+Total Jobs,Avg. Applications/Job,Most Applied Job,Total Apps for That Job
+3,1.00,react developer,1
+
+Average Resume Score Per Job
+Job Title,Job ID,Avg Score,Candidates Scored
+react developer,5,0.0,1
+Sales Representative,9,0.0,1
+
+Drop-off Analytics
+Resume Uploaded,Total Applications,Applied Without Resume
+4,2,0
+
+Raw Resume Scores
+User ID,Username,Job ID,Job Title,Score
+6,test02,5,react developer,0.0
+7,Tinky,9,Sales Representative,0.0
